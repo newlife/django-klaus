@@ -212,9 +212,9 @@ class BlobView(BlobViewMixin, TreeViewMixin, BaseRepoView):
         if not isinstance(context['blob_or_tree'], Blob):
             raise RepoException("Not a blob")
 
-        binary = context['blob_or_tree']
+        binary = guess_is_binary(context['blob_or_tree'])
         too_large = sum(map(len, context['blob_or_tree'].chunked)) > 100 * 1024
-
+        import pdb;pdb.set_trace()
         if binary:
             context.update({
                 'is_markup': False,

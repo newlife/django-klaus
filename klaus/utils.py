@@ -45,7 +45,7 @@ def pygmentize(code, filename=None, render_markup=True):
 
 
 def guess_is_binary(dulwich_blob):
-    return any('\0' in chunk for chunk in dulwich_blob.chunked)
+    return any(b'\0' in chunk for chunk in dulwich_blob.chunked)
 
 
 def guess_is_image(filename):
