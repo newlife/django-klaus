@@ -187,7 +187,7 @@ class HistoryView(TreeViewMixin, BaseRepoView):
             'history': history,
             'more_commits': more_commits,
         })
-        print(context['csid'])
+        #import pdb;pdb.set_trace()
         return context
 
 
