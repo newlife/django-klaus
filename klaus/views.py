@@ -121,10 +121,12 @@ class TreeViewMixin(object):
         root_directory = self.get_root_directory(
             root_directory, blob_or_tree)
         root_tree = repo.get_blob_or_tree(commit, root_directory)
+        if isinstance(root_directory,str):
+            root_directory = root_directory.encode()
 
         dirs, files = [], []
         for entry in root_tree.iteritems():
-            name, entry = entry.path, entry.in_path(root_directory.encode())
+            name, entry = entry.path, entry.in_path(root_directory)
             if entry.mode & stat.S_IFDIR:
                 dirs.append((name.lower(), name, entry.path.decode()))
             else:
