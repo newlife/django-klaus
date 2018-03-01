@@ -160,9 +160,10 @@ class FancyRepo(Repo):
 
     def get_blob_or_tree(self, commit, path):
         """Return the Git tree or blob object for `path` at `commit`."""
+        if isinstance(path, str):
+            path = path.encode()
         try:
-            (mode, oid) = tree_lookup_path(self.__getitem__, commit.tree,
-                                           path)
+            (mode, oid) = tree_lookup_path(self.__getitem__, commit.tree, path)
         except NotTreeError:
             # Some part of the path was a file where a folder was expected.
             # Example: path="/path/to/foo.txt" but "to" is a file in "/path".

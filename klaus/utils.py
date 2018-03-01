@@ -83,7 +83,7 @@ def subpaths(path):
     [('foo', 'foo'), ('bar', 'foo/bar'), ('spam', 'foo/bar/spam')]
     """
     seen = []
-    for part in path.decode().split('/'):
+    for part in path.split('/'):
         seen.append(part)
         yield part, '/'.join(seen)
 

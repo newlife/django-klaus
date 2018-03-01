@@ -124,11 +124,11 @@ class TreeViewMixin(object):
 
         dirs, files = [], []
         for entry in root_tree.iteritems():
-            name, entry = entry.path, entry.in_path(root_directory)
+            name, entry = entry.path, entry.in_path(root_directory.encode())
             if entry.mode & stat.S_IFDIR:
                 dirs.append((name.lower(), name, entry.path.decode()))
             else:
-                files.append((name.lower().decode(), name.decode(), entry.path.decode()))
+                files.append((name.lower(), name.decode(), entry.path.decode()))
         files.sort()
         dirs.sort()
 
@@ -210,7 +210,7 @@ class BlobView(BlobViewMixin, TreeViewMixin, BaseRepoView):
         if not isinstance(context['blob_or_tree'], Blob):
             raise RepoException("Not a blob")
 
-        binary = guess_is_binary(context['blob_or_tree'])
+        binary = context['blob_or_tree']
         too_large = sum(map(len, context['blob_or_tree'].chunked)) > 100 * 1024
 
         if binary:

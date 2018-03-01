@@ -4,7 +4,7 @@
     <h2>
         {{ filename }}
         <span>
-      @<a href="{% url 'klaus:commit' repo=repo.name rev=commit.csid %}">{{ rev }}</a>
+      @<a href="{% url 'klaus:commit' repo=repo.name rev=csid %}">{{ rev }}</a>
       &mdash;
       {% if is_markup %}
         {% if render_markup %}
