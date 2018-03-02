@@ -2,7 +2,7 @@
 
 <div class=blobview>
     <h2>
-        {{ filename }}
+        {{path}}
         <span>
       @<a href="{% url 'klaus:commit' repo=repo.name rev=csid %}">{{ rev }}</a>
       &mdash;
@@ -24,7 +24,29 @@
     <div class=markup>{{ rendered_code|safe }}</div>
     {% else %} {{ rendered_code|safe }} {% endif %} {% endif %} {% endif %}
 </div>
-
+<div class="modal" tabindex="-1" role="dialog" id="comment_dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="line-number" type="hidden">
+                    <div class="form-group">
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="submit-comment" class="btn btn-primary">发表评论</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     highlight_linenos({
         linksSelector: '.highlighttable .linenos a',
@@ -32,6 +54,29 @@
             return anchor.nextSibling
         }
     })
+    $(function() {
+        $('.linenodiv a').click(function(e) {
+            var line = e.target.href.split('#L-')[1]
+            $('#line-number').val(line)
+            $('#comment_dialog').find('.modal-title').text('评论 ' + line + '行')
+            $('#comment_dialog').modal('show')
+        })
+        $('#submit-comment').click(function() {
+            console.log($)
+            var text = $('#message-text').val()
+            var line = $('#line-number').val()
+            var repo = 1
+            var rev = "{{rev}}"
+            console.log($)
+            $.post('/klaus/comment/', {
+                'text': text,
+                'line': line,
+                'rev': rev
+            }, function(data) {
+                console.log(data)
+            })
+        })
+    });
 </script>
 
 {% endblock %}

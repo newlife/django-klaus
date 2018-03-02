@@ -2,7 +2,7 @@
 from django.conf.urls import url
 
 from klaus import views
-
+from klaus.views_comment import post_comment
 
 # TODO: These regexps are probably not going to cover all the cases
 repo = r'(?P<repo>[\w\.\-_]+)'
@@ -11,6 +11,7 @@ path = r'(?P<path>.+)'
 app_name = 'klaus'
 
 urlpatterns = [
+    url(r'^comment/$', post_comment, name='post_comment'),
 
     url(r'^$',
         views.repo_list, name=views.RepoListView.view_name),
@@ -34,5 +35,5 @@ urlpatterns = [
         views.raw, name=views.RawView.view_name),
 
     url(r'^' + repo + '/commit/' + rev + '/$',
-        views.commit, name=views.CommitView.view_name)
+        views.commit, name=views.CommitView.view_name),
 ]

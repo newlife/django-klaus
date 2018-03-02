@@ -147,7 +147,7 @@ class HistoryView(TreeViewMixin, BaseRepoView):
             if page > 7:
                 context['previous_pages'] = [0, 1, 2, None] + range(page)[-3:]
             else:
-                context['previous_pages'] = xrange(page)
+                context['previous_pages'] = range(page)
         else:
             history_length = 10
             skip = 0
@@ -225,7 +225,7 @@ class BlobView(BlobViewMixin, TreeViewMixin, BaseRepoView):
                 'rendered_code': rendered_code,
                 'is_binary': False,
             })
-
+        print(context)
         return context
 
 
