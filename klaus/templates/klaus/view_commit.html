@@ -4,21 +4,33 @@
     {# TODO code duplication in history.html #}
     <div class=commit>
         <span class=line1>
-      <span>{{ commit.message }}</span>
+        <span>{{ commit.message|bytes_to_str }}</span>
         </span>
-        <span class=line2>
-      <span>
-        {{ commit.author_name }}
-      </span>
-        <span title="{{ commit.commit_datetime  }}">
-        {{ commit.commit_datetime|timesince }}
-      </span>
+        <span class="line2 separated-by-dots">
+
+          <span>{{ commit.committer|bytes_to_str }}</span>
+        <span class=hastooltip title="{{ commit.commit_time }}">{{ commit.commit_time|timestamp_to_date|timesince }}</span>
+
         </span>
         <span class=clearfloat></span>
     </div>
-
+    <div class="summary separated-by-dots">
+        <span>
+        {{ summary.nfiles }} changed file(s)
+        with <span class=additions>{{ summary.nadditions }} addition(s)</span> and <span class=deletions>{{ summary.ndeletions }} deletion(s)</span>.
+        </span>
+        <span>
+        <a href="">Raw diff</a>
+      </span>
+        <span>
+        <a href=# onclick="toggler.collapseAll('.file'); return false">Collapse all</a>
+      </span>
+        <span>
+        <a href=# onclick="toggler.expandAll('.file'); return false">Expand all</a>
+      </span>
+    </div>
     <div class=diff>
-        {# {% for file in repo.commit_diff(commit) %} #} {% for file in commit.repo_diff %} {% with fileno=loop.index0 %}
+        {# {% for file in repo.commit_diff(commit) %} #} {% for file in file_changes %} {% with fileno=loop.index0 %}
 
         <div class=filename>
             {# TODO dulwich doesn't do rename recognition #} {% comment %} {% if file.old_filename != file.new_filename %} {{ file.old_filename }} → {% endif %} {% endcomment %} {% if file.new_filename == '/dev/null' %}

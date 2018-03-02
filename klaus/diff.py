@@ -10,6 +10,9 @@
 """
 import re
 from cgi import escape
+from difflib import SequenceMatcher
+from klaus.utils import escape_html as e
+
 
 
 def prepare_udiff(udiff, **kwargs):
@@ -168,7 +171,28 @@ class DiffRenderer(object):
                     pass
 
         return files
-        
+
+def highlight_line(old_line, new_line):
+    """Highlight inline changes in both lines."""
+    start = 0
+    limit = min(len(old_line), len(new_line))
+    while start < limit and old_line[start] == new_line[start]:
+        start += 1
+    end = -1
+    limit -= start
+    while -end <= limit and old_line[end] == new_line[end]:
+        end -= 1
+    end += 1
+    if start or end:
+        def do(l, tag):
+            last = end + len(l)
+            return b''.join(
+                [l[:start], b'<', tag, b'>', l[start:last], b'</', tag, b'>',
+                 l[last:]])
+        old_line = do(old_line, b'del')
+        new_line = do(new_line, b'ins')
+    return old_line, new_line
+
 def render_diff(a, b, n=3):
     """Parse the diff an return data for the template."""
     actions = []

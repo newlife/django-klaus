@@ -31,6 +31,7 @@ class FancyRepo(Repo):
 
     def get_last_updated_at(self):
         """Get datetime of last commit to this repository."""
+        #import pdb;pdb.set_trace()
         refs = [self[ref_hash] for ref_hash in self.get_refs().values()]
         refs.sort(key=lambda obj:getattr(obj, 'commit_time', float('-inf')),
                   reverse=True)
@@ -179,15 +180,14 @@ class FancyRepo(Repo):
                 submodules.append(
                     (name.lower(), name, entry.path, entry.sha))
             elif stat.S_ISDIR(entry.mode):
-                dirs.append((name.lower(), name, entry.path))
+                dirs.append((name.lower(), name.decode(), entry.path.decode()))
             else:
-                files.append((name.lower(), name, entry.path))
+                files.append((name.lower(), name.decode(), entry.path.decode()))
         files.sort()
         dirs.sort()
-
         if path:
             dirs.insert(0, (None, '..', parent_directory(path)))
-
+        #import pdb;pdb.set_trace()
         return {'submodules': submodules, 'dirs' : dirs, 'files' : files}
 
     def commit_diff(self, commit):

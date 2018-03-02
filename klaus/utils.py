@@ -126,3 +126,8 @@ def encode_for_git(s):
 def decode_from_git(b):
     # XXX This assumes everything to be UTF-8 encoded
     return b.decode('utf8')
+
+
+def escape_html(s):
+    return s.replace(b'&', b'&amp;').replace(b'<', b'&lt;') \
+            .replace(b'>', b'&gt;').replace(b'"', b'&quot;')

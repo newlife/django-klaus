@@ -77,6 +77,7 @@ class BaseRepoView(KlausTemplateView):
                 raise RepoException("Empty repository")
         try:
             commit = repo.get_commit(rev)
+            #import pdb;pdb.set_trace()
         except KeyError:
             raise RepoException("No such commit %r" % rev)
 
@@ -107,37 +108,17 @@ class TreeViewMixin(object):
     """
     def get_context_data(self, **ctx):
         context = super(TreeViewMixin, self).get_context_data(**ctx)
-        context['root_tree'] = self.listdir(
-            context['repo'], context['commit'], context['path'],
-            context['blob_or_tree'])
+        context['root_tree'] = self.listdir(context)
         return context
 
-    def listdir(self, repo, commit, root_directory, blob_or_tree):
-        """
-        Returns a list of directories and files in the current path of the
-        selected commit
-        """
-        root_directory = root_directory or b''
-        root_directory = self.get_root_directory(
-            root_directory, blob_or_tree)
-        root_tree = repo.get_blob_or_tree(commit, root_directory)
-        if isinstance(root_directory,str):
-            root_directory = root_directory.encode()
-
-        dirs, files = [], []
-        for entry in root_tree.iteritems():
-            name, entry = entry.path, entry.in_path(root_directory)
-            if entry.mode & stat.S_IFDIR:
-                dirs.append((name.lower(), name, entry.path.decode()))
-            else:
-                files.append((name.lower(), name.decode(), entry.path.decode()))
-        files.sort()
-        dirs.sort()
-
-        if root_directory:
-            dirs.insert(0, (None, '..', parent_directory(root_directory)))
-
-        return {'dirs': dirs, 'files': files}
+    def listdir(self, context):
+        """Return a list of directories and files in the current path of the selected commit."""
+        root_directory = context['path'] or ''
+        root_directory = self.get_root_directory(root_directory, context['blob_or_tree'])
+        return context['repo'].listdir(
+            context['commit'],
+            root_directory
+        )
 
     def get_root_directory(self, root_directory, blob_or_tree):
         if isinstance(blob_or_tree, Blob):
@@ -214,7 +195,6 @@ class BlobView(BlobViewMixin, TreeViewMixin, BaseRepoView):
 
         binary = guess_is_binary(context['blob_or_tree'])
         too_large = sum(map(len, context['blob_or_tree'].chunked)) > 100 * 1024
-        import pdb;pdb.set_trace()
         if binary:
             context.update({
                 'is_markup': False,
@@ -264,6 +244,15 @@ class RawView(BlobViewMixin, BaseRepoView):
 class CommitView(BaseRepoView):
     template_name = 'klaus/view_commit.html'
     view_name = 'commit'
+
+    def get_context_data(self, **ctx):
+        context = super(CommitView, self).get_context_data(**ctx)
+        commit = context['commit']
+        repo = context['repo']
+        summary, file_changes = repo.commit_diff(commit)
+        context['summary'] = summary
+        context['file_changes'] = file_changes
+        return context    
 
 
 repo_list = RepoListView.as_view()
