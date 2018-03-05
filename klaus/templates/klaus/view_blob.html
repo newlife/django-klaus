@@ -67,11 +67,13 @@
             var line = $('#line-number').val()
             var repo = 1
             var rev = "{{rev}}"
+            var path="{{path}}"
             console.log($)
             $.post('/klaus/comment/', {
                 'text': text,
                 'line': line,
-                'rev': rev
+                'rev': rev,
+                'path': path,
             }, function(data) {
                 console.log(data)
             })

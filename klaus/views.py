@@ -9,7 +9,9 @@ from django.views.generic import TemplateView
 from dulwich.objects import Blob
 
 from klaus import markup, utils
-from klaus.utils import parent_directory, subpaths, pygmentize, guess_is_binary, guess_is_image
+from klaus.highlighting import highlight_or_render
+
+from klaus.utils import parent_directory, subpaths, guess_is_binary, guess_is_image
 from klaus.repo import RepoManager, RepoException
 
 
@@ -213,7 +215,8 @@ class BlobView(BlobViewMixin, TreeViewMixin, BaseRepoView):
             })
         else:
             render_markup = 'markup' not in self.request.GET
-            rendered_code = pygmentize(
+            print(context['blob_or_tree'].data)
+            rendered_code = highlight_or_render(
                 context['blob_or_tree'].data,
                 context['filename'],
                 render_markup
