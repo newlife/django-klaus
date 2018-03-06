@@ -260,8 +260,10 @@ class RepoManager(object):
 
     @classmethod
     def add_repo(cls, path):
-        cls._repos.append(FancyRepo(path))
-
+        try:
+            cls._repos.append(FancyRepo(path))
+        except Exception:
+            pass
     @classmethod
     def get_repo(cls, repo_name):
         for r in cls._repos:
@@ -270,5 +272,14 @@ class RepoManager(object):
 
         raise Exception("No such repository %s".format(repo_name))
 
+repo_home = settings.REPO_HOME
+def get_repo_list(path):
+    dir_list = os.listdir(path)
+    for one in dir_list:
+        repo_path = path+one
+        if os.path.isdir(repo_path):
+            yield repo_path
 
-list(map(RepoManager.add_repo, getattr(settings, 'KLAUS_REPO_PATHS', [])))
+def fresh_repo_list():
+    list(map(RepoManager.add_repo, list(get_repo_list(repo_home))))
+list(map(RepoManager.add_repo, list(get_repo_list(repo_home))))

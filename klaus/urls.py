@@ -2,7 +2,7 @@
 from django.conf.urls import url
 
 from klaus import views
-from klaus.views_comment import post_comment
+from klaus.views_comment import post_comment,clone_repo
 
 # TODO: These regexps are probably not going to cover all the cases
 repo = r'(?P<repo>[\w\.\-_]+)'
@@ -11,6 +11,7 @@ path = r'(?P<path>.+)'
 app_name = 'klaus'
 
 urlpatterns = [
+    url(r'^add_repo/$', clone_repo, name='clone_repo'),
     url(r'^comment/$', post_comment, name='post_comment'),
 
     url(r'^$',

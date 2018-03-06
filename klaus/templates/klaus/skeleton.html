@@ -23,6 +23,7 @@
         <span class=breadcrumbs>
     {% block breadcrumbs %}{% endblock %}
   </span> {% block extra_header %}{% endblock %}
+        <input id='repo_url'> <button id='submit-repo'>添加仓库</button>
     </header>
 
     <div id=content>
@@ -32,7 +33,19 @@
     <footer>
         powered by <a href="https://github.com/biern/django-klaus">django-klaus</a> {{ KLAUS_VERSION }}, a simple Git viewer
     </footer>
-
+    <script>
+        $(function() {
+            $('#submit-repo').click(function() {
+                var repo_url = $('#repo_url').val()
+                console.log(repo_url)
+                $.post('/klaus/add_repo/', {
+                    'repo_url': repo_url,
+                }, function(data) {
+                    console.log(data)
+                })
+            })
+        });
+    </script>
 
 </body>
 

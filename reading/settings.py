@@ -119,4 +119,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_URL = '/static/'
-KLAUS_REPO_PATHS = [ BASE_DIR +'/fakerepo']
+REPO_HOME = BASE_DIR +'/repo/'
+if not os.path.exists(REPO_HOME):# ingore REPO_HOME is a file
+    os.mkdir(REPO_HOME)

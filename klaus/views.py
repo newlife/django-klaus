@@ -19,7 +19,7 @@ class KlausContextMixin(object):
     def get_context_data(self, **ctx):
         context = super(KlausContextMixin, self).get_context_data(**ctx)
         context['KLAUS_SITE_NAME'] = getattr(
-            settings, 'KLAUS_SITE_NAME', 'Klaus GIT browser')
+            settings, 'KLAUS_SITE_NAME', '仓库列表')
         context['KLAUS_VERSION'] = utils.KLAUS_VERSION
         return context
 
@@ -46,7 +46,6 @@ class RepoListView(KlausTemplateView):
 
         context['repos'] = sorted(RepoManager.all_repos(), key=sort_key,
                                   reverse=reverse)
-        print(RepoManager.all_repos())
         return context
 
 
