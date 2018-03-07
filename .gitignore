@@ -30,7 +30,7 @@ fakerepo/
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-
+*.sqlite3
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -99,3 +99,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+.vscode/
+.idea/
+repo/

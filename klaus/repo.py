@@ -281,5 +281,6 @@ def get_repo_list(path):
             yield repo_path
 
 def fresh_repo_list():
+    RepoManager._repos = []
     list(map(RepoManager.add_repo, list(get_repo_list(repo_home))))
 list(map(RepoManager.add_repo, list(get_repo_list(repo_home))))

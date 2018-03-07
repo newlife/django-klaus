@@ -4,6 +4,7 @@ import sh
 from sh.contrib import git
 from klaus.models import Repo, Comment
 from django.conf import settings
+from klaus.repo import fresh_repo_list
 
 @csrf_exempt
 def post_comment(request):
@@ -24,4 +25,5 @@ def clone_repo(request):
     repo_home = settings.REPO_HOME
     sh.cd(repo_home)
     git.clone(repo_url)
+    fresh_repo_list()
     return HttpResponse('ok')
