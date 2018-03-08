@@ -10,7 +10,8 @@ from klaus.repo import fresh_repo_list
 def post_comment(request):
     data = request.POST
     path = data['path']
-    repo = Repo.objects.get(id=1)
+    repo_url = data['repo_url']
+    repo = Repo.objects.get(url=repo_url)
     line = data['line']
     text = data['text']
     rev = data['rev']
@@ -20,10 +21,11 @@ def post_comment(request):
 @csrf_exempt
 def clone_repo(request):
     data = request.POST
-    print(data)
     repo_url = data['repo_url']
     repo_home = settings.REPO_HOME
     sh.cd(repo_home)
     git.clone(repo_url)
     fresh_repo_list()
+    repo_name = repo_url.split('/')[-1][:-4]
+    Repo.objects.create(name=repo_name,url=repo_url)
     return HttpResponse('ok')

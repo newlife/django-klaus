@@ -13,6 +13,7 @@ from klaus.highlighting import highlight_or_render
 
 from klaus.utils import parent_directory, subpaths, guess_is_binary, guess_is_image
 from klaus.repo import RepoManager, RepoException
+from klaus.models import Comment, Repo
 
 
 class KlausContextMixin(object):
@@ -70,15 +71,16 @@ class BaseRepoView(KlausTemplateView):
         context = super(BaseRepoView, self).get_context_data(**ctx)
 
         repo = RepoManager.get_repo(self.kwargs['repo'])
+        repo_url = repo.get_config()._values[(b'remote',b'origin')][b'url'].decode()
         rev = self.kwargs.get('rev')
         path = self.kwargs.get('path','')
+        repo_obj = Repo.objects.get(url=repo_url)
         if rev is None:
             rev = repo.get_default_branch()
             if rev is None:
                 raise RepoException("Empty repository")
         try:
             commit = repo.get_commit(rev)
-            #import pdb;pdb.set_trace()
         except KeyError:
             raise RepoException("No such commit %r" % rev)
 
@@ -89,6 +91,8 @@ class BaseRepoView(KlausTemplateView):
         context.update({
             'view': self.view_name,
             'repo': repo,
+            'repo_url':repo_url,
+            'repo_obj':repo_obj,
             'rev': rev,
             'commit': commit,
             'branches': repo.get_branch_names(exclude=rev),
@@ -214,20 +218,20 @@ class BlobView(BlobViewMixin, TreeViewMixin, BaseRepoView):
             })
         else:
             render_markup = 'markup' not in self.request.GET
-            print(context['blob_or_tree'].data)
             rendered_code = highlight_or_render(
                 context['blob_or_tree'].data,
                 context['filename'],
                 render_markup
             )
+            comment_list = Comment.objects.filter(repo=context['repo_obj'],file_path=context['path'])
             context.update({
                 'too_large': False,
                 'is_markup': markup.can_render(context['filename']),
                 'render_markup': render_markup,
                 'rendered_code': rendered_code,
                 'is_binary': False,
+                "comment_list":comment_list
             })
-        print(context)
         return context
 
 

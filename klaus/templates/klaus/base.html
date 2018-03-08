@@ -2,7 +2,9 @@
 <span>
     <a href="{% url 'klaus:history' repo=repo.name %}">{{ repo.name }}</a>
     <span class=slash>/</span>
+<a href="{% url 'klaus:history' repo=repo.name rev=rev %}">{{ rev }}</a>
 </span>
+
 
 {% if subpaths %}
 <span>
@@ -10,6 +12,7 @@
       {% if loop.last %}
       <a href="">{{ name }}</a>
       {% else %}
+      <a href="{% url 'klaus:history' repo=repo.name  rev=rev path=subpath %}">{{ name }}</a>
       <span class=slash>/</span> {% endif %} {% endfor %}
 </span>
 {% endif %} {% endblock %} {% block extra_header %}

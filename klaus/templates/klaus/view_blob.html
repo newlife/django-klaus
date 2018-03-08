@@ -23,6 +23,13 @@
     {% else %} {% include "klaus/includes/not_shown.html" with reason="Binary data" %} {% endif %} {% else %} {% if too_large %} {% include "klaus/includes/not_shown.html" with reason="Large file" %} {% else %} {% if is_markup and render_markup %}
     <div class=markup>{{ rendered_code|safe }}</div>
     {% else %} {{ rendered_code|safe }} {% endif %} {% endif %} {% endif %}
+    <ul>
+        {% for comment in comment_list %}
+        <li>
+            {{comment.line}}:{{comment.content}}
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 <div class="modal" tabindex="-1" role="dialog" id="comment_dialog">
     <div class="modal-dialog" role="document">
@@ -62,20 +69,21 @@
             $('#comment_dialog').modal('show')
         })
         $('#submit-comment').click(function() {
-            console.log($)
             var text = $('#message-text').val()
             var line = $('#line-number').val()
             var repo = 1
             var rev = "{{rev}}"
-            var path="{{path}}"
-            console.log($)
+            var repo_url = "{{repo_url}}"
+            var path = "{{path}}"
             $.post('/klaus/comment/', {
                 'text': text,
                 'line': line,
                 'rev': rev,
                 'path': path,
+                'repo_url': repo_url
             }, function(data) {
                 console.log(data)
+                $('#comment_dialog').modal('hide')
             })
         })
     });
